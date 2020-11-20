@@ -16,19 +16,21 @@ source libs/docker.sh
 assert_dependency "jq"
 assert_dependency "curl"
 
-# Alpine Linux
-update_image "library/alpine" "Alpine Linux" "false" "\d{8}"
+# Debian Stable
+IMG_CHANNEL="stable"
+update_image "library/debian" "Debian" "false" "$IMG_CHANNEL-\d+-slim"
 
-# Mindustry Server
-CURRENT_APP_VERSION="${_CURRENT_VERSION%-*}"
-NEW_APP_VERSION=$(curl --silent --location "https://api.github.com/repos/Anuken/Mindustry/releases/latest" | jq -r ".tag_name" | sed "s/^v//")
-if [ "$CURRENT_APP_VERSION" != "$NEW_APP_VERSION" ]; then
-	prepare_update "APP_VERSION" "Mindustry Server" "$CURRENT_APP_VERSION" "$NEW_APP_VERSION"
-	update_version "$NEW_APP_VERSION"
+# Packages
+PKG_URL="https://packages.debian.org/$IMG_CHANNEL/amd64"
+update_pkg "ca-certificates" "CA-Certificates" "false" "$PKG_URL" "\d{8}"
+
+# Hornet Client
+CURRENT_VERSION=$(cat Dockerfile | grep --only-matching --perl-regexp "(?<=APP_VERSION=)\d+(\.\d+)+")
+NEW_VERSION=$(curl --silent --location "https://api.github.com/repos/gohornet/hornet/releases/latest" | jq -r ".tag_name" | sed "s/^v//")
+if [ "$CURRENT_VERSION" != "$NEW_VERSION" ]; then
+	prepare_update "VERSION" "Hornet" "$CURRENT_VERSION" "$NEW_VERSION"
+	update_version "$NEW_VERSION"
 fi
-
-# OpenJRE
-update_pkg "openjdk11-jre-headless" "OpenJRE" "false" "https://pkgs.alpinelinux.org/package/edge/community/x86_64" "(\d+\.)+\d+_p\d+-r\d+"
 
 if ! updates_available; then
 	#echo "No updates available."

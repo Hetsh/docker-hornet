@@ -20,7 +20,7 @@ if ! docker version &> /dev/null; then
 fi
 
 # Build the image
-APP_NAME="mindustry"
+APP_NAME="hornet"
 IMG_NAME="hetsh/$APP_NAME"
 docker build --tag "$IMG_NAME:latest" --tag "$IMG_NAME:$_NEXT_VERSION" .
 
@@ -31,8 +31,10 @@ case "${1-}" in
 		--rm \
 		--tty \
 		--interactive \
-		--publish 6567:6567/tcp \
-		--publish 6567:6567/udp \
+		--publish 8081:8081/tcp \
+		--publish 14265:14265/tcp \
+		--publish 14626:14626/udp \
+		--publish 15600:15600/tcp \
 		--mount type=bind,source=/etc/localtime,target=/etc/localtime,readonly \
 		--name "$APP_NAME" \
 		"$IMG_NAME"

@@ -1,28 +1,38 @@
-FROM library/alpine:20200917
-RUN apk add --no-cache \
-    openjdk11-jre-headless=11.0.9_p11-r0
+FROM library/debian:stable-20201117-slim
+ARG DEBIAN_FRONTEND="noninteractive"
+RUN apt-get update && \
+    apt-get install --assume-yes \
+        ca-certificates=20190110 && \
+    rm -r /var/lib/apt/lists /var/cache/apt
 
 # App user
-ARG APP_USER="mindustry"
-ARG APP_UID=1368
-RUN adduser --disabled-password --uid "$APP_UID" --no-create-home --gecos "$APP_USER" --shell /sbin/nologin "$APP_USER"
+ARG APP_USER="hornet"
+ARG APP_UID=1372
+RUN useradd --uid "$APP_UID" --user-group --no-create-home --shell /sbin/nologin "$APP_USER"
 
-# Server binary
-ARG APP_VERSION=104.6
-ARG APP_BIN="/opt/server.jar"
-ADD "https://github.com/Anuken/Mindustry/releases/download/v$APP_VERSION/server-release.jar" "$APP_BIN"
-RUN chmod 644 "$APP_BIN"
+# Install application
+ARG CONF_DIR="/etc/hornet"
+ARG APP_VERSION=0.5.6
+ARG APP_ARCHIVE="HORNET-${APP_VERSION}_Linux_x86_64.tar.gz"
+ADD "https://github.com/gohornet/hornet/releases/download/v$APP_VERSION/$APP_ARCHIVE" "$APP_ARCHIVE"
+RUN tar --extract --file "$APP_ARCHIVE" && \
+    rm "$APP_ARCHIVE" && \
+    EXTRACT_DIR="${APP_ARCHIVE%.tar.gz}" && \
+    mv "$EXTRACT_DIR/hornet" "/usr/bin" && \
+    mkdir "$CONF_DIR" && \
+    mv "$EXTRACT_DIR/"*.json "$CONF_DIR" && \
+    rm -r "$EXTRACT_DIR"
 
 # Volumes
-ARG DATA_DIR="/mindustry"
+ARG DATA_DIR="/hornet"
 RUN mkdir "$DATA_DIR" && \
-    chown -R "$APP_USER":"$APP_USER" "$DATA_DIR"
-VOLUME ["$DATA_DIR"]
+    chmod 750 "$CONF_DIR" "$DATA_DIR" && \
+    chown -R "$APP_USER":"$APP_USER" "$CONF_DIR" "$DATA_DIR"
+VOLUME ["$CONF_DIR", "$DATA_DIR"]
 
-#      GAME     STATUS
-EXPOSE 6567/udp 6567/tcp
+#      DASHBOARD API       AUTO-PEERING GOSSIP
+EXPOSE 8081/tcp  14265/tcp 14626/udp    15600/tcp
 
 USER "$APP_USER"
 WORKDIR "$DATA_DIR"
-ENV JAVA_OPT="-Xms8M -Xmx1G"
-ENTRYPOINT exec java $JAVA_OPT -jar /opt/server.jar
+ENTRYPOINT ["hornet", "-d", "/etc/hornet"]
