@@ -1,7 +1,5 @@
-**This Project is still work in progress.**
-
 # Hornet
-Small and easy to set up IOTA Node using Hornet. 
+Small and easy to set up IOTA Node using Hornet.
 
 ## Running the node
 ```bash
@@ -15,7 +13,7 @@ docker stop hornet
 
 ## Creating persistent storage
 ```bash
-MP="/path/to/storage"
+MP="/path/to/data"
 mkdir -p "$MP"
 chown -R 1372:1372 "$MP"
 ```
@@ -26,7 +24,7 @@ The systemd unit can be found in my GitHub [repository](https://github.com/Hetsh
 ```bash
 systemctl enable hornet --now
 ```
-By default, the systemd service assumes `/apps/hornet` for persistent storage and `/etc/localtime` for timezone.
+By default, the systemd service assumes `/apps/hornet/data` for data, `/apps/hornet/conf` for configuration and `/etc/localtime` for timezone.
 Since this is a personal systemd unit file, you might need to adjust some parameters to suit your setup.
 
 ## Fork Me!
