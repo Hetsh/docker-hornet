@@ -25,12 +25,7 @@ PKG_URL="https://packages.debian.org/$IMG_CHANNEL/amd64"
 update_pkg "ca-certificates" "CA-Certificates" "false" "$PKG_URL" "\d{8}"
 
 # Hornet Client
-CURRENT_VERSION=$(cat Dockerfile | grep --only-matching --perl-regexp "(?<=APP_VERSION=)\d+(\.\d+)+")
-NEW_VERSION=$(curl --silent --location "https://api.github.com/repos/gohornet/hornet/releases/latest" | jq -r ".tag_name" | sed "s/^v//")
-if [ "$CURRENT_VERSION" != "$NEW_VERSION" ]; then
-	prepare_update "VERSION" "Hornet" "$CURRENT_VERSION" "$NEW_VERSION"
-	update_version "$NEW_VERSION"
-fi
+update_github "gohornet/hornet" "Hornet" "APP_VERSION" "\d+(\.\d+)+"
 
 if ! updates_available; then
 	#echo "No updates available."
