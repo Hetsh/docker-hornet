@@ -2,7 +2,7 @@ FROM library/debian:stable-20210111-slim
 ARG DEBIAN_FRONTEND="noninteractive"
 RUN apt-get update && \
     apt-get install --assume-yes \
-        ca-certificates=20190110 && \
+        ca-certificates=20200601~deb10u2 && \
     rm -r /var/lib/apt/lists /var/cache/apt
 
 # App user
