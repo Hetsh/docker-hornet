@@ -13,18 +13,23 @@ docker stop hornet
 
 ## Creating persistent storage
 ```bash
-MP="/path/to/data"
-mkdir -p "$MP"
-chown -R 1372:1372 "$MP"
+STORAGE="/path/to/storage"
+mkdir -p "$STORAGE"
+chown -R 1372:1372 "$STORAGE"
 ```
 `1372` is the numerical id of the user running the server (see Dockerfile).
+The user must have RW access to the storage directory.
+Start the server with the additional mount flag:
+```bash
+docker run --mount type=bind,source=/path/to/storage,target=/hornet ...
+```
 
 ## Automate startup and shutdown via systemd
 The systemd unit can be found in my GitHub [repository](https://github.com/Hetsh/docker-hornet).
 ```bash
 systemctl enable hornet --now
 ```
-By default, the systemd service assumes `/apps/hornet/data` for data, `/apps/hornet/conf` for configuration and `/etc/localtime` for timezone.
+By default, the systemd service assumes `/apps/hornet` for data and `/etc/localtime` for timezone.
 Since this is a personal systemd unit file, you might need to adjust some parameters to suit your setup.
 
 ## Fork Me!

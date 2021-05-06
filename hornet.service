@@ -11,8 +11,7 @@ ExecStartPre=-/bin/docker create \
               --publish 14265:14265/tcp \
               --publish 14626:14626/udp \
               --publish 15600:15600/tcp \
-              --mount type=bind,source=/apps/hornet/conf,target=/etc/hornet \
-              --mount type=bind,source=/apps/hornet/data,target=/hornet \
+              --mount type=bind,source=/apps/hornet,target=/hornet \
               --mount type=bind,source=/etc/localtime,target=/etc/localtime,readonly \
               hetsh/hornet
 ExecStart=/bin/docker start --attach hornet
