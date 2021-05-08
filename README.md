@@ -3,7 +3,7 @@ Small and easy to set up IOTA Node using Hornet.
 
 ## Running the node
 ```bash
-docker run --detach --name hornet --publish 8081:8081/tcp --publish 14265:14265/tcp --publish 14626:14626/udp --publish 15600:15600/tcp hetsh/hornet
+docker run --detach --name hornet --publish 8081:8081/tcp --publish 14265:14265/tcp --publish 15600:15600/tcp hetsh/hornet
 ```
 
 ## Stopping the container
