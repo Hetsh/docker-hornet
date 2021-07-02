@@ -11,7 +11,7 @@ ARG APP_UID=1372
 RUN useradd --uid "$APP_UID" --user-group --no-create-home --shell /sbin/nologin "$APP_USER"
 
 # Install application
-ARG APP_VERSION=1.0.2
+ARG APP_VERSION=1.0.3
 ARG APP_ARCHIVE="HORNET-${APP_VERSION}_Linux_x86_64.tar.gz"
 ADD "https://github.com/gohornet/hornet/releases/download/v$APP_VERSION/$APP_ARCHIVE" "$APP_ARCHIVE"
 RUN tar --extract --file "$APP_ARCHIVE" && \
