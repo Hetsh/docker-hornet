@@ -17,6 +17,7 @@ RUN apt update && \
     APP_PKG="HORNET-${APP_VERSION}_Linux_x86_64" && \
     wget --quiet "https://github.com/gohornet/hornet/releases/download/v$APP_VERSION/$APP_PKG.tar.gz" && \
     apt purge --assume-yes --auto-remove wget && \
+    rm -r /var/lib/apt/lists /var/cache/apt && \
     tar --extract --strip-components=1 --directory "/usr/bin" --file "$APP_PKG.tar.gz" "$APP_PKG/hornet" && \
     rm "$APP_PKG.tar.gz"
 
