@@ -19,31 +19,39 @@ if ! docker version &> /dev/null; then
 	exit -1
 fi
 
-# Build the image
-APP_NAME="hornet"
-IMG_NAME="hetsh/$APP_NAME"
-docker build --tag "$IMG_NAME:latest" --tag "$IMG_NAME:$_NEXT_VERSION" .
-
+IMG_NAME="hetsh/hornet"
 case "${1-}" in
-	# Test with default configuration
+	# Build and test with default configuration
 	"--test")
+		docker build \
+			--tag "$IMG_NAME:test" \
+			.
 		docker run \
-		--rm \
-		--tty \
-		--interactive \
-		--publish 8081:8081/tcp \
-		--publish 14265:14265/tcp \
-		--publish 14626:14626/udp \
-		--publish 15600:15600/tcp \
-		--mount type=bind,source=/etc/localtime,target=/etc/localtime,readonly \
-		--name "$APP_NAME" \
-		"$IMG_NAME"
+			--rm \
+			--tty \
+			--interactive \
+			--publish 8081:8081/tcp \
+			--publish 14265:14265/tcp \
+			--publish 14626:14626/udp \
+			--publish 15600:15600/tcp \
+			--mount type=bind,source=/etc/localtime,target=/etc/localtime,readonly \
+			"$IMG_NAME:test"
 	;;
-	# Push image to docker hub
+	# Build if it does not exist and push image to docker hub
 	"--upload")
 		if ! tag_exists "$IMG_NAME"; then
+			docker build \
+				--tag "$IMG_NAME:latest" \
+				--tag "$IMG_NAME:$_NEXT_VERSION" \
+				.
 			docker push "$IMG_NAME:latest"
 			docker push "$IMG_NAME:$_NEXT_VERSION"
 		fi
+	;;
+	# Build image without additonal steps
+	*)
+		docker build \
+			--tag "$IMG_NAME:latest" \
+			.
 	;;
 esac
