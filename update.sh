@@ -22,7 +22,7 @@ update_image "amd64/debian" "Debian" "false" "$IMG_CHANNEL-\d+-slim"
 
 # Packages
 PKG_URL="https://packages.debian.org/$IMG_CHANNEL/amd64"
-update_pkg "ca-certificates" "CA-Certificates" "false" "$PKG_URL" "\d{8}~deb\d+u\d+"
+update_pkg "ca-certificates" "CA-Certificates" "false" "$PKG_URL" "\d{8}"
 
 # Hornet Client
 update_github "gohornet/hornet" "Hornet" "APP_VERSION" "\d+(\.\d+)+"
