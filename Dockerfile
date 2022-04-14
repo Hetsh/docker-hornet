@@ -11,7 +11,7 @@ ARG APP_UID=1372
 RUN useradd --uid "$APP_UID" --user-group --no-create-home --shell /sbin/nologin "$APP_USER"
 
 # Install application
-ARG APP_VERSION=1.1.3
+ARG APP_VERSION=1.2.0
 RUN apt update && \
     apt install --no-install-recommends --assume-yes wget && \
     APP_PKG="HORNET-${APP_VERSION}_Linux_x86_64" && \
